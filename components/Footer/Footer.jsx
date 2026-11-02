@@ -4,9 +4,9 @@ import styles from "./Footer.module.css";
  * Footer — contact card at the bottom of the page.
  */
 
-const EMAIL = "yaswanthkoneri6@gmail.com";
+const EMAIL = "suryateja.uidev@gmail.com";
 const PHONE = "+91 72075 66804";
-const GITHUB = "https://github.com/yaswanthkoneri";
+const GITHUB = "https://github.com/suryateja";
 
 export default function Footer() {
   return (
