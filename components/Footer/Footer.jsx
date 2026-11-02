@@ -37,7 +37,7 @@ export default function Footer() {
         </div>
 
         <p className={styles.copyright}>
-          © {new Date().getFullYear()} Yaswanth Koneri · Software Development Engineer III
+          © {new Date().getFullYear()} Surya Teja Pathuri · Software Development Engineer III
         </p>
       </div>
     </footer>

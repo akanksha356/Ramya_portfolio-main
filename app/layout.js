@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Yaswanth Koneri — Software Development Engineer III",
+  title: "Surya Teja Pathuri — Software Development Engineer III",
   description:
     "Full-stack Software Engineer with 9+ years of experience building scalable web applications, microservices, and cloud-native backend systems.",
 };

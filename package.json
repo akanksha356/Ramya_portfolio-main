@@ -2,7 +2,7 @@
   "name": "ramya-portfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Cinematic portfolio for Yaswanth Koneri — Software Development Engineer III. Next.js, Three.js, GSAP",
+  "description": "Cinematic portfolio for Surya Teja Pathuri — Software Development Engineer III. Next.js, Three.js, GSAP",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

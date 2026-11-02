@@ -9,8 +9,8 @@ export default function Home() {
       <VideoIntro
         src="/portfolio_intro.mp4"
         badge="Software Development Engineer III · Bangalore, India"
-        firstName="Yaswanth"
-        lastName="Koneri"
+        firstName="Surya Teja"
+        lastName="Pathuri"
         role="Full-stack Software Engineer · Scalable web applications · Cloud-native systems"
         skills={[
           "JavaScript",

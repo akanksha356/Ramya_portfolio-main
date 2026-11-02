@@ -15,8 +15,8 @@ import styles from "./VideoIntro.module.css";
 export default function VideoIntro({
   src = "/portfolio-intro.mp4",
   badge = "Open to work",
-  firstName = "Yaswanth",
-  lastName = "Koneri",
+  firstName = "Surya Teja",
+  lastName = "Pathuri",
   role = "Software Development Engineer III · Full-stack systems",
   skills = ["JavaScript", "Node.js", "React", "AWS"],
   githubUrl = "https://github.com/yaswanthkoneri",
