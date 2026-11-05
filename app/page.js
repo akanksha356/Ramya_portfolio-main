@@ -7,7 +7,6 @@ export default function Home() {
   return (
     <main>
       <VideoIntro
-        src="/portfolio_intro.mp4"
         badge="Software Development Engineer III · Bangalore, India"
         firstName="Surya Teja"
         lastName="Pathuri"
@@ -21,8 +20,8 @@ export default function Home() {
           "Docker · ECS",
           "Redis",
         ]}
-        githubUrl="https://github.com/yaswanthkoneri"
-        email="yaswanthkoneri6@gmail.com"
+        githubUrl="https://github.com/suryateja"
+        email="suryateja.uidev@gmail.com"
       />
 
       {/* Second page — Who I Am, Technical Skills, Experience, Education */}

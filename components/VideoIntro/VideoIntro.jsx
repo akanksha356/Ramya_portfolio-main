@@ -6,37 +6,28 @@ import CinematicLayer from "@/components/CinematicLayer/CinematicLayer";
 import styles from "./VideoIntro.module.css";
 
 /**
- * VideoIntro — split cinematic hero
- *  - Left: "open to work" badge, name, role, skill pills, CTAs
- *  - Right: portrait talking-head video (4K), softly blended into the bg
+ * Intro hero
+ *  - "Open to work" badge, name, role, skill pills, and CTAs
  *  - Dark bokeh particle background (Three.js) floating over the whole hero
- *  - GSAP entrance timeline, glassmorphism video controls, scroll indicator
+ *  - GSAP entrance timeline and scroll indicator
  */
 export default function VideoIntro({
-  src = "/portfolio-intro.mp4",
   badge = "Open to work",
   firstName = "Surya Teja",
   lastName = "Pathuri",
   role = "Software Development Engineer III · Full-stack systems",
   skills = ["JavaScript", "Node.js", "React", "AWS"],
-  githubUrl = "https://github.com/yaswanthkoneri",
-  email = "yaswanthkoneri6@gmail.com",
+  githubUrl = "https://github.com/suryateja",
+  email = "suryateja.uidev@gmail.com",
   nextSectionId = "work",
 }) {
-  const fgVideoRef = useRef(null);
   const rootRef = useRef(null);
+  const audioRef = useRef(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [audioError, setAudioError] = useState(false);
 
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
-
-  /* ---- GSAP entrance + autoplay kick-off ---- */
+  /* ---- GSAP entrance ---- */
   useEffect(() => {
-    const fg = fgVideoRef.current;
-    if (fg) {
-      const p = fg.play();
-      if (p && typeof p.catch === "function") p.catch(() => {});
-    }
-
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
@@ -78,12 +69,6 @@ export default function VideoIntro({
           "-=0.25"
         )
         .fromTo(
-          `.${styles.videoWrap}`,
-          { autoAlpha: 0, scale: 1.04 },
-          { autoAlpha: 1, scale: 1, duration: 1.2, ease: "expo.out" },
-          "-=1.1"
-        )
-        .fromTo(
           `.${styles.scroll}`,
           { autoAlpha: 0, y: 12 },
           { autoAlpha: 1, y: 0, duration: 0.7 },
@@ -94,69 +79,28 @@ export default function VideoIntro({
     return () => ctx.revert();
   }, []);
 
-  /* ---- Pause when scrolled away, resume (from the same spot) on return.
-         currentTime is preserved across pause, so playback continues where it
-         left off. A manual pause is respected — we only auto-resume what we
-         auto-paused. ---- */
-  useEffect(() => {
-    const fg = fgVideoRef.current;
-    if (!fg) return;
-    let pausedByScroll = false;
-    let ticking = false;
-
-    const evaluate = () => {
-      ticking = false;
-      const scrolledAway = window.scrollY > window.innerHeight * 0.6;
-      if (scrolledAway) {
-        if (!fg.paused) {
-          fg.pause();
-          setIsPlaying(false);
-          pausedByScroll = true;
-        }
-      } else if (pausedByScroll && fg.paused) {
-        fg.play()
-          .then(() => setIsPlaying(true))
-          .catch(() => {});
-        pausedByScroll = false;
-      }
-    };
-
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(evaluate);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  /* ---- Controls ---- */
-  const togglePlay = useCallback(() => {
-    const fg = fgVideoRef.current;
-    if (!fg) return;
-    if (fg.paused) {
-      fg.play().catch(() => {});
-      setIsPlaying(true);
-    } else {
-      fg.pause();
-      setIsPlaying(false);
-    }
-  }, []);
-
-  const toggleMute = useCallback(() => {
-    const fg = fgVideoRef.current;
-    if (!fg) return;
-    const next = !fg.muted;
-    fg.muted = next;
-    setIsMuted(next);
-    if (!next) fg.play().catch(() => {});
-  }, []);
-
   const handleScrollDown = useCallback(() => {
     const el = document.getElementById(nextSectionId);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [nextSectionId]);
+
+  const toggleAudio = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (audio.paused) {
+      try {
+        await audio.play();
+        setIsAudioPlaying(true);
+        setAudioError(false);
+      } catch {
+        setAudioError(true);
+      }
+    } else {
+      audio.pause();
+      setIsAudioPlaying(false);
+    }
+  }, []);
 
   return (
     <section className={styles.stickyWrap}>
@@ -226,45 +170,30 @@ export default function VideoIntro({
               Email
             </a>
           </div>
+
         </div>
 
-        {/* ---- Right: video column ---- */}
-        <div className={styles.right}>
-          <div className={styles.videoWrap}>
-            <video
-              ref={fgVideoRef}
-              className={styles.fgVideo}
-              src={src}
-              autoPlay
-              loop
-              playsInline
-              preload="auto"
-            />
-            {/* Soft blend of the video into the dark background */}
-            <div className={styles.videoFade} aria-hidden="true" />
-            <div className={styles.videoGrain} aria-hidden="true" />
-
-            {/* Controls */}
-            <div className={styles.controls}>
-              <button
-                type="button"
-                className={styles.ctrlBtn}
-                onClick={togglePlay}
-                aria-label={isPlaying ? "Pause video" : "Play video"}
-              >
-                {isPlaying ? <PauseIcon /> : <PlayIcon />}
-              </button>
-              <button
-                type="button"
-                className={styles.ctrlBtn}
-                onClick={toggleMute}
-                aria-label={isMuted ? "Unmute video" : "Mute video"}
-              >
-                {isMuted ? <MutedIcon /> : <SoundIcon />}
-              </button>
-            </div>
-
-          </div>
+        <div className={styles.audioPlayer}>
+          <button
+            type="button"
+            className={styles.audioButton}
+            onClick={toggleAudio}
+            aria-label={isAudioPlaying ? "Pause audio message" : "Play audio message"}
+            title={isAudioPlaying ? "Pause audio message" : "Play audio message"}
+          >
+            {isAudioPlaying ? <PauseIcon /> : <PlayIcon />}
+          </button>
+          <audio
+            ref={audioRef}
+            className={styles.audioElement}
+            preload="metadata"
+            onEnded={() => setIsAudioPlaying(false)}
+          >
+            <source src="/intro-audio.mp3" type="audio/mpeg" />
+          </audio>
+          <span className={styles.audioStatus} role="status" aria-live="polite">
+            {audioError ? "Audio playback unavailable" : ""}
+          </span>
         </div>
 
         {/* ---- Scroll indicator ---- */}
@@ -284,7 +213,6 @@ export default function VideoIntro({
   );
 }
 
-/* ---- Inline icons ---- */
 function PlayIcon() {
   return (
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -292,35 +220,11 @@ function PlayIcon() {
     </svg>
   );
 }
+
 function PauseIcon() {
   return (
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
       <path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor" />
-    </svg>
-  );
-}
-function SoundIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor" />
-      <path
-        d="M16.5 12a3.5 3.5 0 0 0-2-3.15v6.3a3.5 3.5 0 0 0 2-3.15zM14.5 4.2v2.06a6 6 0 0 1 0 11.48v2.06a8 8 0 0 0 0-15.6z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-function MutedIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor" />
-      <path
-        d="M16 9.5l4 4m0-4l-4 4"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        fill="none"
-      />
     </svg>
   );
 }
